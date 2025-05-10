@@ -1,0 +1,14 @@
+.arrow {
+    fill: whitesmoke;
+    stroke-width: 6;
+    stroke: gray;
+    transition: stroke 0.1s;
+}
+
+.arrow.up {
+    fill: limegreen;
+}
+
+.arrow.down {
+    fill: red;
+}

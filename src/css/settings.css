@@ -1,0 +1,29 @@
+.settings-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 45vw);
+    gap: 2vh 2vw;
+    justify-items: center;
+    padding: 2vh 0;
+}
+
+.settings-buttons button {
+    width: 100%;
+    aspect-ratio: 3 / 1;
+    padding: 1vh 0;
+    font-size: 3vw;
+    border: none;
+    border-radius: 1.5vh;
+    background-color: royalblue;
+    color: white;
+    box-shadow: 0 0.5vh 0.5vh rgba(0, 0, 0, 0.5),
+    inset 0 0.2vh 0.5vh rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease,
+    box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.settings-buttons button:hover {
+    transform: translateY(-1vh);
+    box-shadow: 0 1.5vh 1.5vh rgba(0, 0, 0, 0.6),
+    inset 0 0.5vh 1vh rgba(255, 255, 255, 0.3);
+}
