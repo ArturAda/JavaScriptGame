@@ -1,35 +1,60 @@
+import { setMusicPlaying, isMusicPlaying } from './music.js';
+
 export function key_control(root = document) {
     window.buttonUp = localStorage.getItem('buttonUp') || 'ArrowUp';
     window.buttonLeft = localStorage.getItem('buttonLeft') || 'ArrowLeft';
     window.buttonDown = localStorage.getItem('buttonDown') || 'ArrowDown';
     window.buttonRight = localStorage.getItem('buttonRight') || 'ArrowRight';
-    const setButtonUp = root.querySelector('.button-up');
-    const setButtonLeft = root.querySelector('.button-left');
-    const setButtonDown = root.querySelector('.button-down');
-    const setButtonRight = root.querySelector('.button-right');
+    window.buttonSound = isMusicPlaying();
+
+    const setButtonUp = root.querySelector('.up-row');
+    const setButtonLeft = root.querySelector('.left-row');
+    const setButtonDown = root.querySelector('.down-row');
+    const setButtonRight = root.querySelector('.right-row');
+    const setButtonSound = root.querySelector('.sound-row');
+
+    const upBtn = setButtonUp.querySelector('button');
+    const leftBtn = setButtonLeft.querySelector('button');
+    const downBtn = setButtonDown.querySelector('button');
+    const rightBtn = setButtonRight.querySelector('button');
+    const soundBtn = setButtonSound.querySelector('button');
+
     let number_button = 0;
-    setButtonUp.textContent = `Вверх: ${window.buttonUp}`;
-    setButtonLeft.textContent = `Влево: ${window.buttonLeft}`;
-    setButtonDown.textContent = `Вниз: ${window.buttonDown}`;
-    setButtonRight.textContent = `Вправо: ${window.buttonRight}`;
+    setButtonUp.querySelector('label').textContent = 'Вверх';
+    setButtonLeft.querySelector('label').textContent = 'Влево';
+    setButtonDown.querySelector('label').textContent = 'Вниз';
+    setButtonRight.querySelector('label').textContent = 'Вправо';
+    setButtonSound.querySelector('label').textContent = 'Включить музыку в игре';
+
+    upBtn.textContent = window.buttonUp;
+    leftBtn.textContent = window.buttonLeft;
+    downBtn.textContent = window.buttonDown;
+    rightBtn.textContent = window.buttonRight;
+    soundBtn.textContent = isMusicPlaying() ? '✕' : '';
 
     function change_button(new_button) {
-        if (number_button === 1) {
-            window.buttonUp = new_button.key;
-            localStorage.setItem('buttonUp', window.buttonUp);
-            setButtonUp.textContent = `Вверх: ${window.buttonUp}`;
-        } else if (number_button === 2) {
-            window.buttonLeft = new_button.key;
-            localStorage.setItem('buttonLeft', window.buttonLeft);
-            setButtonLeft.textContent = `Влево: ${window.buttonLeft}`;
-        } else if (number_button === 3) {
-            window.buttonRight = new_button.key;
-            localStorage.setItem('buttonRight', window.buttonRight);
-            setButtonRight.textContent = `Вправо: ${window.buttonRight}`;
-        } else if (number_button === 4) {
-            window.buttonDown = new_button.key;
-            localStorage.setItem('buttonDown', window.buttonDown);
-            setButtonDown.textContent = `Вниз: ${window.buttonDown}`;
+        const new_value = new_button.key;
+        switch (number_button) {
+            case 1:
+                window.buttonUp = new_value;
+                upBtn.textContent = new_value;
+                localStorage.setItem('buttonUp', window.buttonUp);
+                break;
+            case 2:
+                window.buttonLeft = new_value;
+                leftBtn.textContent = new_value;
+                localStorage.setItem('buttonLeft', window.buttonLeft);
+                break;
+            case 3:
+                window.buttonDown = new_value;
+                downBtn.textContent = new_value;
+                localStorage.setItem('buttonDown', window.buttonDown);
+                break;
+            case 4:
+                window.buttonRight = new_value;
+                rightBtn.textContent = new_value;
+                localStorage.setItem('buttonRight', window.buttonRight);
+                break;
         }
         number_button = 0;
         document.removeEventListener('keydown', change_button);
@@ -37,25 +62,52 @@ export function key_control(root = document) {
 
     setButtonUp.addEventListener('click', () => {
         number_button = 1;
-        setButtonUp.textContent = `Нажмите на любую клавишу, чтобы привязать ее к "Вверх"`;
+        upBtn.textContent = 'Нажмите на любую клавишу';
         document.addEventListener('keydown', change_button);
     });
 
     setButtonLeft.addEventListener('click', () => {
         number_button = 2;
-        setButtonLeft.textContent = `Нажмите на любую клавишу, чтобы привязать ее к "Влево"`;
+        leftBtn.textContent = 'Нажмите на любую клавишу';
         document.addEventListener('keydown', change_button);
     });
 
     setButtonDown.addEventListener('click', () => {
         number_button = 3;
-        setButtonDown.textContent = `Нажмите на любую клавишу, чтобы привязать ее к "Вниз"`;
+        downBtn.textContent = 'Нажмите на любую клавишу';
         document.addEventListener('keydown', change_button);
     });
 
     setButtonRight.addEventListener('click', () => {
         number_button = 4;
-        setButtonRight.textContent = `Нажмите на любую клавишу, чтобы привязать ее к "Вправо"`;
+        rightBtn.textContent = 'Нажмите на любую клавишу';
         document.addEventListener('keydown', change_button);
+    });
+
+    setButtonSound.addEventListener('click', () => {
+        window.buttonSound = !isMusicPlaying();
+        setMusicPlaying(window.buttonSound);
+        soundBtn.textContent = window.buttonSound ? '✕' : '';
+
+    });
+
+    window.addEventListener('storage', ({ key: k, newValue }) => {
+        if (k === 'buttonUp') {
+            window.buttonUp = newValue;
+            upBtn.textContent = newValue;
+        } else if (k === 'buttonLeft') {
+            window.buttonLeft = newValue;
+            leftBtn.textContent = newValue;
+        } else if (k === 'buttonDown') {
+            window.buttonDown = newValue;
+            downBtn.textContent = newValue;
+        } else if (k === 'buttonRight') {
+            window.buttonRight = newValue;
+            rightBtn.textContent = newValue;
+        } else if (k === 'buttonSound') {
+            const on = JSON.parse(newValue);
+            window.buttonSound = on;
+            soundBtn.textContent = on ? '✕' : '';
+        }
     });
 }

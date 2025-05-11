@@ -1,0 +1,68 @@
+#screen-main{
+    font-family: sans-serif;
+    background-color: indianred;
+    background-image: url("../images/dollar.svg"),
+    linear-gradient(45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08)),
+    linear-gradient(45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08));
+    background-size: 15vh 15vh, 15vh 15vh, 5vh 5vh, 5vh 5vh;
+    background-position: 0 0, 7.5vh 7.5vh, 0 0, 2.5vh 2.5vh;
+}
+
+#screen-main .container {
+    display: flex;
+    align-items: center;
+    gap: 5vw;
+}
+
+#screen-main .game-title {
+    margin: 0;
+    font-size: 6vh;
+    display: flex;
+    line-height: 1.2;
+}
+
+#screen-main .stocks {
+    color: #992222;
+    animation: stock-pulse 3s ease-in-out infinite;
+}
+
+@keyframes stock-pulse {
+    0%, 100%
+    { color: #992222; }
+    50%
+    { color: #330000; }
+}
+
+#screen-main .nightmare {
+    color: #ccffcc;
+    animation: nightmare-pulse 3s ease-in-out infinite;
+}
+
+@keyframes nightmare-pulse {
+    0%, 100%
+    { color: #ccffcc; }
+    50%
+    { color: #00cc00; }
+}
+
+#screen-main .menu {
+    display: flex;
+    flex-direction: column;
+    gap: 5vh;
+}
+
+#screen-main .menu-button {
+    background-color: blanchedalmond;
+    border: none;
+    border-radius: 1vh;
+    padding: 1.2vh 2.5vw;
+    font-size: 1.2rem;
+    box-shadow: 0 1vh 1.5vh rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#screen-main .menu-button:hover {
+    transform: translateY(-1.5vh);
+    box-shadow: 0 1.5vh 2vh rgba(0, 0, 0, 0.4);
+}

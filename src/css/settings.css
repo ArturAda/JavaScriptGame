@@ -1,29 +1,73 @@
-.settings-buttons {
-    display: grid;
-    grid-template-columns: repeat(2, 45vw);
-    gap: 2vh 2vw;
-    justify-items: center;
-    padding: 2vh 0;
+#screen-settings, #screen-settings *{ box-sizing: border-box; }
+
+#screen-settings {
+    font-family: sans-serif;
+    background: linear-gradient(to bottom, #add8e6, #90ee90);
+    position: relative;
 }
 
-.settings-buttons button {
-    width: 100%;
-    aspect-ratio: 3 / 1;
-    padding: 1vh 0;
-    font-size: 3vw;
+#screen-settings .back-button {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background-color: blanchedalmond;
     border: none;
-    border-radius: 1.5vh;
-    background-color: royalblue;
-    color: white;
-    box-shadow: 0 0.5vh 0.5vh rgba(0, 0, 0, 0.5),
-    inset 0 0.2vh 0.5vh rgba(255, 255, 255, 0.2);
-    transition: transform 0.3s ease,
-    box-shadow 0.3s ease;
+    border-radius: 1vh;
+    padding: 1.2vh 2.5vw;
+    font-size: 1.2rem;
+    box-shadow: 0 1vh 1.5vh rgba(0,0,0,.4);
     cursor: pointer;
+    transition: transform .3s, box-shadow .3s;
 }
 
-.settings-buttons button:hover {
-    transform: translateY(-1vh);
-    box-shadow: 0 1.5vh 1.5vh rgba(0, 0, 0, 0.6),
-    inset 0 0.5vh 1vh rgba(255, 255, 255, 0.3);
+#screen-settings .back-button:hover {
+    transform: translateY(-1.5vh);
+    box-shadow: 0 1.5vh 2vh rgba(0, 0, 0, 0.4);
+}
+
+#screen-settings .settings-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 80vw;
+    max-width: 25rem;
+}
+
+#screen-settings .setting-row,
+#screen-settings .sound-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#screen-settings .setting-row label,
+#screen-settings .sound-row label {
+    color: #DA70D6;
+    font-size: 1.2rem;
+}
+
+#screen-settings .setting-row button,
+#screen-settings .sound-row button {
+    background: transparent;
+    border: 0.1rem solid #DA70D6;
+    color:#DA70D6;
+    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+#screen-settings .setting-row button:hover,
+#screen-settings .sound-row button:hover {
+    transform: scale(1.2);
+}
+
+#screen-settings .sound-row button {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
 }
