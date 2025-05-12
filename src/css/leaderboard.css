@@ -32,6 +32,23 @@
     margin-bottom: 1.5rem;
 }
 
+.leaderboard-container {
+    width: 90%;
+    max-width: 50rem;
+    max-height: 50vh;
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
+    background: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+}
+
+#leaderboard {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
 #leaderboard th {
     background: #28c8b4;
     color: #fff;
