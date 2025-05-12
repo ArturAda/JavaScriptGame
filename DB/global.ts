@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.185.0/http/server.ts";
 import { serveFile } from "https://deno.land/std@0.185.0/http/file_server.ts";
+import { join }      from "https://deno.land/std@0.185.0/path/mod.ts";
 
 const kv = await Deno.openKv();
 const LEADERBOARD_LIMIT = 20;
@@ -103,9 +104,10 @@ serve(async (req) => {
         return json(out);
     }
 
-    const filePath = p === "/" ? "../src/html/intro.html" : p;
+    const filename = p === "/" ? "intro.html" : p.slice(1);
+    const filePath = join(Deno.cwd(), "src", "html", filename);
     try {
-        return await serveFile(req, `../src/html/${filePath}`);
+        return await serveFile(req, filePath);
     } catch {
         return new Response("Not Found", { status: 404 });
     }
