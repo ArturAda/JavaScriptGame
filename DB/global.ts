@@ -104,8 +104,18 @@ serve(async (req) => {
         return json(out);
     }
 
-    const filename = p === "/" ? "intro.html" : p.slice(1);
-    const filePath = join(Deno.cwd(), "src", "html", filename);
+    let diskPath: string;
+    if (p === "/") {
+        diskPath = join(Deno.cwd(), "src", "html", "intro.html");
+    } else {
+        const parts = p.slice(1).split("/");
+        const [top, ...rest] = parts;
+        if (["html","css","scripts","images","music"].includes(top)) {
+            diskPath = join(Deno.cwd(), "src", top, ...rest);
+        } else {
+            diskPath = join(Deno.cwd(), "src", "html", parts.join("/"));
+        }
+    }
     try {
         return await serveFile(req, filePath);
     } catch {
