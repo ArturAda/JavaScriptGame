@@ -1,7 +1,6 @@
 import { serve } from "https://deno.land/std@0.185.0/http/server.ts";
 import { serveFile } from "https://deno.land/std@0.185.0/http/file_server.ts";
 
-
 const kv = await Deno.openKv();
 const LEADERBOARD_LIMIT = 20;
 
@@ -38,7 +37,9 @@ async function trimLeaderboard() {
     const keep = new Set<string>();
     let count = 0;
     for await (const { key } of kv.list<ScoreEntry>({ prefix: ["scores"] })) {
-        if (++count <= LEADERBOARD_LIMIT) keep.add(JSON.stringify(key));
+        if (++count <= LEADERBOARD_LIMIT) {
+            keep.add(JSON.stringify(key));
+        }
     }
     if (count <= LEADERBOARD_LIMIT) return;
     for await (const { key } of kv.list<ScoreEntry>({ prefix: ["scores"] })) {
@@ -100,6 +101,17 @@ serve(async (req) => {
         return json(out);
     }
 
-    const filePath = pathname === "/" ? "../src/html/intro.html" : pathname;
-    return serveFile(req, `./static${filePath}`);
+    let filePath: string;
+    if (pathname === "/") {
+        filePath = "src/html/intro.html";
+    } else {
+        filePath = `src${pathname}`;
+    }
+
+    try {
+        return await serveFile(req, filePath);
+    } catch (err) {
+        console.error("file not found:", filePath, err);
+        return new Response("404 Not Found", { status: 404 });
+    }
 });
