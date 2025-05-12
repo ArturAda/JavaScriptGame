@@ -25,8 +25,8 @@ function json(data: unknown, status = 200) {
     });
 }
 
-function error(msg: string, status = 400) {
-    return json({ error: msg }, status);
+function error(message: string, status = 400) {
+    return json({ error: message }, status);
 }
 
 function keyFor(entry: ScoreEntry) {
@@ -51,13 +51,13 @@ async function trimLeaderboard() {
 
 serve(async (req) => {
     const url = new URL(req.url);
-    const { pathname } = url;
+    const p = url.pathname;
 
     if (req.method === "OPTIONS") {
         return new Response(null, { headers: corsHeaders });
     }
 
-    if (pathname === "/api/submit" && req.method === "POST") {
+    if (p === "/api/submit" && req.method === "POST") {
         let body: Partial<ScoreEntry>;
         try {
             body = await req.json();
@@ -65,17 +65,18 @@ serve(async (req) => {
             return error("Invalid JSON");
         }
         if (typeof body.name !== "string" || !body.name.trim()) {
-            return error("'name' is required");
+            return error("`name` is required");
         }
         if (typeof body.summary !== "number") {
-            return error("'summary' must be number");
+            return error("`summary` must be a number");
         }
         if (typeof body.growth_rate !== "number") {
-            return error("'growth_rate' must be number");
+            return error("`growth_rate` must be a number");
         }
         if (typeof body.increase !== "number") {
-            return error("'increase' must be number");
+            return error("`increase` must be a number");
         }
+
         const entry: ScoreEntry = {
             name: body.name.trim().slice(0, 32),
             summary: body.summary,
@@ -83,12 +84,13 @@ serve(async (req) => {
             increase: body.increase,
             ts: Date.now(),
         };
+
         await kv.set(keyFor(entry), entry);
         await trimLeaderboard();
         return json({ success: true });
     }
 
-    if (pathname === "/api/leaderboard" && req.method === "GET") {
+    if (p === "/api/leaderboard" && req.method === "GET") {
         const out: ScoreEntry[] = [];
         for await (
             const { value } of kv.list<ScoreEntry>(
@@ -101,17 +103,10 @@ serve(async (req) => {
         return json(out);
     }
 
-    let filePath: string;
-    if (pathname === "/") {
-        filePath = "src/html/intro.html";
-    } else {
-        filePath = `src${pathname}`;
-    }
-
+    const filePath = p === "/" ? "..src/html/intro.html" : p;
     try {
-        return await serveFile(req, filePath);
-    } catch (err) {
-        console.error("file not found:", filePath, err);
-        return new Response("404 Not Found", { status: 404 });
+        return await serveFile(req, `./src/html${filePath}`);
+    } catch {
+        return new Response("Not Found", { status: 404 });
     }
 });

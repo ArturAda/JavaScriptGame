@@ -2,7 +2,21 @@ import { switchTo, gameTracks,
     isMusicPlaying, applyVolume } from './music.js';
 import { key_control }          from './control.js';
 import { playButtonSound }      from './button_sound.js';
+import { loadLeaderboard } from './leaderboard.js';
 
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+document.getElementById('main-leader-btn')
+    .addEventListener('click', () => showScreen('screen-leaderboard'));
+
+document.getElementById('leader-back')
+    .addEventListener('click', () => showScreen('screen-main'));
+
+
+let startTime = 0;
 const SPEED_ARROW = 180;
 const BASE_SPEED  = 160;
 const SMALL_K = 1;
@@ -94,8 +108,8 @@ addEventListener('keyup',e=>{
 });
 
 const capital0=Math.random()*1000;
-let a=Math.random()*10,b=Math.random()*10,c=Math.random()*10;
-let growth=0, inc0=Math.random()*10, increase=0, summary=0;
+let a=Math.random()*10,b=Math.random()*10,c=Math.random()*3;
+let growth=0, inc0=Math.random()*30, increase=0, summary=0;
 
 let envMul=1;
 let rightDur=0, leftDur=0, idleDur=0;
@@ -156,11 +170,13 @@ function update(dt){
         if(envMul>1){ slowDecayT+=dt; if(slowDecayT>=2){ envMul=Math.max(1,envMul*0.9); slowDecayT-=2; } }
     }
 
-    increase = inc0 + c*growth;
-    summary  = capital0 + increase*b + growth * growth*a;
+    const elapsed = (performance.now() - startTime) / 1000;
+
+    increase = c*growth / elapsed;
+    summary  = inc0 + increase * b / elapsed + growth * a;
     if(summary<0){ endGame(); return; }
 
-    survive+=dt; if(survive>=surgeAt){ wave(25); surgeAt+=10+2*Math.random(); }
+    survive+=dt; if(survive>=surgeAt){ wave(20); surgeAt+=10+2*Math.random(); }
 
     spawnT+=dt; if(spawnT>=nextWaveDelay){ spawnT=0; nextWaveDelay=2+Math.random(); wave(10); }
 
@@ -222,6 +238,7 @@ export function startGame(){
     player.x=(W-player.w)/2; player.y=(H-player.h)/2;
     reset(); wave(25); spawnT=0; nextWaveDelay=2+Math.random();
     growth=0; summary=0; running=true; paused=false; pauseLayer.classList.add('hidden');
+    startTime = performance.now();
     lastT=performance.now(); raf=requestAnimationFrame(loop);
 }
 
@@ -260,8 +277,8 @@ async function submitScore(name) {
     } catch(err) {
         console.error(err);
     }
-    await submitScoreToServer(name);
     await loadLeaderboard();
+    switchTo(gameTracks[1]);
     showScreen('screen-leaderboard');
 }
 
