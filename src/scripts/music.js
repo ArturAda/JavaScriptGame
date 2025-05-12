@@ -3,7 +3,7 @@ let music_is_playing = JSON.parse(localStorage.getItem('buttonSound') || 'true')
 export const gameTracks = [
     new Audio('../music/menu_beta.mp3'),
     new Audio('../music/leaderboard_beta.mp3'),
-    new Audio('../music/game_1_beta(default).mp3'),
+    new Audio('../music/game_1(default)_beta.mp3'),
 ];
 
 gameTracks.forEach(track => { track.loop = true });
