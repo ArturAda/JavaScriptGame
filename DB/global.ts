@@ -1,5 +1,6 @@
-import { serve } from "https://deno.land/std/http/server.ts";
-import { serveFile } from "https://deno.land/std/http/server.ts";
+import { serve } from "https://deno.land/std@0.185.0/http/server.ts";
+import { serveFile } from "https://deno.land/std@0.185.0/http/file_server.ts";
+
 
 const kv = await Deno.openKv();
 const LEADERBOARD_LIMIT = 20;
