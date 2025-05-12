@@ -53,7 +53,6 @@ export async function loadLeaderboard() {
       <td>${e.summary.toFixed(2)}</td>
       <td>${e.growth_rate.toFixed(2)}</td>
       <td>${e.increase.toFixed(2)}</td>
-      <td>${new Date(e.ts).toLocaleString()}</td>
     `;
         tbody.appendChild(tr);
     }

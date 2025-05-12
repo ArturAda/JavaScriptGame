@@ -1,5 +1,6 @@
 import { switchTo, gameTracks, isMusicPlaying, setMusicPlaying } from './music.js';
 import { key_control } from './control.js';
+import { playButtonSound } from './button_sound.js';
 
 function show(id) {
     document.querySelectorAll('.screen')
@@ -51,6 +52,19 @@ document.getElementById('settings-button').addEventListener('click', () => {
 
 document.getElementById('back-button').addEventListener('click', () => {
     show('screen-main');
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('main-about-btn').addEventListener('click', () => {
+        playButtonSound();
+        switchTo(gameTracks[1]);
+        show('screen-about');
+    });
+    document.getElementById('about-back').addEventListener('click', () => {
+        playButtonSound();
+        switchTo(gameTracks[0]);
+        show('screen-main');
+    });
 });
 
 key_control(document);

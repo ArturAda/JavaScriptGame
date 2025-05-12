@@ -32,7 +32,7 @@ export function playButtonSound() {
     gain.connect(context.destination);
 
     noiseSource.start(time);
-    noiseSource.start(time + duration);
+    noiseSource.stop(time + duration);
 }
 
 document.querySelectorAll('.menu-button').forEach(button => {

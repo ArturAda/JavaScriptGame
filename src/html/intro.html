@@ -33,9 +33,44 @@
             <button class="menu-button" id="play-button">Играть</button>
             <button class="menu-button" id="settings-button">Настройки</button>
             <button class="menu-button" id="main-leader-btn">Таблица рекордов</button>
-            <button class="menu-button">Об игре</button>
+            <button id="main-about-btn" class="menu-button" >Об игре</button>
         </div>
     </div>
+</section>
+<section id="screen-about" class="screen">
+    <div class="about-content">
+        <h2>Правила игры «Stocks Nightmare»</h2>
+        <h3>Цель игры:</h3>
+        <p>Управляя стрелкой, избегать столкновений с различными долларами и набрать максимально возможный итоговый счет (Summary).</p>
+        <h3>Управление:</h3>
+        <ul>
+            <li><strong>Вверх / Вниз</strong>: двигать стрелку вверх и вниз.</li>
+            <li><strong>Вправо</strong>: увеличивает Growth и ускоряет игру.</li>
+            <li><strong>Влево</strong>: уменьшает Growth и замедляет игру.</li>
+        </ul>
+        <h3>Игровые показатели:</h3>
+        <ul>
+            <li><strong>Growth Rate</strong>, <strong>Increase</strong>, <strong>Summary</strong> отображаются в левом верхнем углу.</li>
+            <li>Цвет: зелёный > 0, красный < 0, серый = 0.</li>
+        </ul>
+        <h3>Особенности игры:</h3>
+        <ul>
+            <li>Чем дольше удерживается кнопка вправо, тем быстрее увеличивается Growth Rate.</li>
+            <li>При долгом бездействии Growth Rate начнёт снижаться.</li>
+            <li>Чем выше Increase, тем быстрее двигаются доллары.</li>
+        </ul>
+        <h3>Враги (Доллары):</h3>
+        <ul>
+            <li><strong>Злой Доллар</strong>: красная повязка, движется вверх-вниз и влево.</li>
+            <li><strong>Маленький Доллар</strong>: маленький, быстро меняет направление.</li>
+            <li><strong>Большой Доллар</strong>: медленный, в очках.</li>
+        </ul>
+        <h3>Конец игры:</h3>
+        <p>При первом столкновении стрелки с долларом.</p>
+        <h3>Победа:</h3>
+        <p>Набрать максимально высокий Summary.</p>
+    </div>
+    <button id="about-back" class="menu-button">Назад</button>
 </section>
 <section id="screen-game" class="screen">
     <div id="game-area">

@@ -59,6 +59,14 @@
     user-select: none;
 }
 
+#leaderboard thead th {
+    position: sticky;
+    top: 0;
+    background: #28c8b4;
+    color: #fff;
+    z-index: 2;
+}
+
 #leaderboard th:hover {
     background: #20b39e;
 }
@@ -88,4 +96,48 @@
 
 #leader-back:hover {
     background-color: #20b39e;
+}
+
+#screen-about {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    background: url('../images/parchment.png') center/cover no-repeat;
+    padding: 2rem;
+    color: #333;
+}
+
+#screen-about.active {
+    display: flex;
+}
+
+.about-content {
+    max-width: 60rem;
+    background: rgba(255 255 255 / 0.85);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0 0 0 / 0.25);
+}
+
+#about-back {
+    margin-top: 2rem;
+}
+
+#screen-about .menu-button {
+    background-color: blanchedalmond;
+    border: none;
+    border-radius: 1vh;
+    padding: 1.2vh 2.5vw;
+    font-size: 1.2rem;
+    box-shadow: 0 1vh 1.5vh rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#screen-about .menu-button:hover {
+    transform: translateY(-1.5vh);
+    box-shadow: 0 1.5vh 2vh rgba(0, 0, 0, 0.4);
 }
