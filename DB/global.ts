@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std/http/server.ts";
+import { serveFile } from "https://deno.land/std/http/server.ts";
 
 const kv = await Deno.openKv();
 const LEADERBOARD_LIMIT = 20;
@@ -36,9 +37,7 @@ async function trimLeaderboard() {
     const keep = new Set<string>();
     let count = 0;
     for await (const { key } of kv.list<ScoreEntry>({ prefix: ["scores"] })) {
-        if (++count <= LEADERBOARD_LIMIT) {
-            keep.add(JSON.stringify(key));
-        }
+        if (++count <= LEADERBOARD_LIMIT) keep.add(JSON.stringify(key));
     }
     if (count <= LEADERBOARD_LIMIT) return;
     for await (const { key } of kv.list<ScoreEntry>({ prefix: ["scores"] })) {
@@ -49,14 +48,14 @@ async function trimLeaderboard() {
 }
 
 serve(async (req) => {
+    const url = new URL(req.url);
+    const { pathname } = url;
+
     if (req.method === "OPTIONS") {
         return new Response(null, { headers: corsHeaders });
     }
 
-    const url = new URL(req.url);
-    const { pathname } = url;
-
-    if (req.method === "POST" && pathname === "/api/submit") {
+    if (pathname === "/api/submit" && req.method === "POST") {
         let body: Partial<ScoreEntry>;
         try {
             body = await req.json();
@@ -75,7 +74,6 @@ serve(async (req) => {
         if (typeof body.increase !== "number") {
             return error("'increase' must be number");
         }
-
         const entry: ScoreEntry = {
             name: body.name.trim().slice(0, 32),
             summary: body.summary,
@@ -83,13 +81,12 @@ serve(async (req) => {
             increase: body.increase,
             ts: Date.now(),
         };
-
         await kv.set(keyFor(entry), entry);
         await trimLeaderboard();
         return json({ success: true });
     }
 
-    if (req.method === "GET" && pathname === "/api/leaderboard") {
+    if (pathname === "/api/leaderboard" && req.method === "GET") {
         const out: ScoreEntry[] = [];
         for await (
             const { value } of kv.list<ScoreEntry>(
@@ -102,5 +99,6 @@ serve(async (req) => {
         return json(out);
     }
 
-    return new Response("Not Found", { status: 404 });
+    const filePath = pathname === "/" ? "../src/html/intro.html" : pathname;
+    return serveFile(req, `./static${filePath}`);
 });
