@@ -17,80 +17,80 @@
     </style>
 </head>
 <body>
-    <section id="screen-intro" class="screen active">
-        <div class="intro">
-            <button id="start-button" class="big-button">Время приключений</button>
+<section id="screen-intro" class="screen active">
+    <div class="intro">
+        <button id="start-button" class="big-button">Время приключений</button>
+    </div>
+</section>
+<section id="screen-main" class="screen">
+    <div id="dollar-field"></div>
+    <div class="container">
+        <h1 class="game-title">
+            <span class="stocks">Stocks</span>
+            <span class="nightmare">Nightmare</span>
+        </h1>
+        <div class="menu">
+            <button class="menu-button" id="play-button">Играть</button>
+            <button class="menu-button" id="settings-button">Настройки</button>
+            <button class="menu-button" id="main-leader-btn">Таблица рекордов</button>
+            <button class="menu-button">Об игре</button>
         </div>
-    </section>
-    <section id="screen-main" class="screen">
-        <div id="dollar-field"></div>
-        <div class="container">
-            <h1 class="game-title">
-                <span class="stocks">Stocks</span>
-                <span class="nightmare">Nightmare</span>
-            </h1>
-            <div class="menu">
-                <button class="menu-button" id="play-button">Играть</button>
-                <button class="menu-button" id="settings-button">Настройки</button>
-                <button class="menu-button" id="main-leader-btn">Таблица рекордов</button>
-                <button class="menu-button">Об игре</button>
+    </div>
+</section>
+<section id="screen-game" class="screen">
+    <div id="game-area">
+        <div id="player" class="arrow"></div>
+        <div id="hud">
+            <span id="stat-growth">growth rate: 0.00</span><br>
+            <span id="stat-increase">increase: 0.00</span><br>
+            <span id="stat-summary">summary: 0.00</span>
+        </div>
+        <div id="pause-overlay" class="hidden">
+            <div class="menu pause-menu">
+                <button class="menu-button" id="continue-btn">Продолжить</button>
+                <button class="menu-button" id="pause-settings-btn">Настройки</button>
+                <button class="menu-button" id="pause-leader-btn">Таблица рекордов</button>
+                <button class="menu-button" id="pause-about-btn">Об игре</button>
+                <button class="menu-button" id="pause-main-btn">В главное меню</button>
             </div>
         </div>
-    </section>
-    <section id="screen-game" class="screen">
-        <div id="game-area">
-            <div id="player" class="arrow"></div>
-            <div id="hud">
-                <span id="stat-growth">growth rate: 0.00</span><br>
-                <span id="stat-increase">increase: 0.00</span><br>
-                <span id="stat-summary">summary: 0.00</span>
-            </div>
-            <div id="pause-overlay" class="hidden">
-                <div class="menu pause-menu">
-                    <button class="menu-button" id="continue-btn">Продолжить</button>
-                    <button class="menu-button" id="pause-settings-btn">Настройки</button>
-                    <button class="menu-button" id="pause-leader-btn">Таблица рекордов</button>
-                    <button class="menu-button" id="pause-about-btn">Об игре</button>
-                    <button class="menu-button" id="pause-main-btn">В главное меню</button>
-                </div>
-            </div>
-            <div id="gameover-modal" class="gameover-modal hidden">
-                <div class="gameover-content">
-                    <h2>Game Over</h2>
-                    <p>Введите ваше имя для таблицы рекордов</p>
-                    <input id="player-name-input" type="text" placeholder="Ваше имя" />
-                </div>
+        <div id="gameover-modal" class="gameover-modal hidden">
+            <div class="gameover-content">
+                <h2>Game Over</h2>
+                <p>Введите ваше имя для таблицы рекордов</p>
+                <input id="player-name-input" type="text" placeholder="Ваше имя" />
             </div>
         </div>
-    </section>
-    <section id="screen-settings" class="screen">
-        <button id="back-button" class="menu-button back-button">Вернуться в меню</button>
-        <div class="settings-buttons">
-            <div class="setting-row up-row"><label>Вверх</label><button></button></div>
-            <div class="setting-row left-row"><label>Влево</label><button></button></div>
-            <div class="setting-row down-row"><label>Вниз</label><button></button></div>
-            <div class="setting-row right-row"><label>Вправо</label><button></button></div>
-            <div class="sound-row"><label>Включить музыку в игре</label><button></button></div>
-        </div>
-    </section>
-    <section id="screen-leaderboard" class="screen">
-        <h2>Таблица рекордов</h2>
-        <table id="leaderboard">
-            <thead>
-            <tr>
-                <th data-key="name">Имя ▲▼</th>
-                <th data-key="summary">Сумма ▲▼</th>
-                <th data-key="growth_rate">Рост ▲▼</th>
-                <th data-key="increase">Увеличение ▲▼</th>
-            </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <button id="leader-back" class="menu-button">Назад</button>
-    </section>
-    <script type="module" src="../scripts/button_sound.js"></script>
-    <script type="module" src="../scripts/global.js"></script>
-    <script type="module" src="../scripts/game.js"></script>
-    <script type="module" src="../scripts/leaderboard.js"></script>
+    </div>
+</section>
+<section id="screen-settings" class="screen">
+    <button id="back-button" class="menu-button back-button">Вернуться в меню</button>
+    <div class="settings-buttons">
+        <div class="setting-row up-row"><label>Вверх</label><button></button></div>
+        <div class="setting-row left-row"><label>Влево</label><button></button></div>
+        <div class="setting-row down-row"><label>Вниз</label><button></button></div>
+        <div class="setting-row right-row"><label>Вправо</label><button></button></div>
+        <div class="sound-row"><label>Включить музыку в игре</label><button></button></div>
+    </div>
+</section>
+<section id="screen-leaderboard" class="screen">
+    <h2>Таблица рекордов</h2>
+    <table id="leaderboard">
+        <thead>
+        <tr>
+            <th data-key="name">Имя ▲▼</th>
+            <th data-key="summary">Сумма ▲▼</th>
+            <th data-key="growth_rate">Рост ▲▼</th>
+            <th data-key="increase">Увеличение ▲▼</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <button id="leader-back" class="menu-button">Назад</button>
+</section>
+<script type="module" src="../scripts/button_sound.js"></script>
+<script type="module" src="../scripts/global.js"></script>
+<script type="module" src="../scripts/game.js"></script>
+<script type="module" src="../scripts/leaderboard.js"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 import { switchTo, gameTracks,
-         isMusicPlaying, applyVolume } from './music.js';
+    isMusicPlaying, applyVolume } from './music.js';
 import { key_control }          from './control.js';
 import { playButtonSound }      from './button_sound.js';
 
@@ -74,7 +74,9 @@ function syncNames(){
     keys.leftName  = window.buttonLeft  || 'ArrowLeft';
     keys.rightName = window.buttonRight || 'ArrowRight';
 }
-syncNames(); addEventListener('storage',syncNames);
+syncNames();
+document.addEventListener('controlsChanged',syncNames);
+
 addEventListener('keydown',e=>{
     if(!running) return;
     if(e.key==='Escape'){ e.preventDefault(); togglePause(); return; }

@@ -1,7 +1,7 @@
 export function key_control(root = document) {
-    window.buttonUp    = localStorage.getItem('buttonUp')    || 'ArrowUp';
-    window.buttonLeft  = localStorage.getItem('buttonLeft')  || 'ArrowLeft';
-    window.buttonDown  = localStorage.getItem('buttonDown')  || 'ArrowDown';
+    window.buttonUp    = localStorage.getItem('buttonUp') || 'ArrowUp';
+    window.buttonLeft  = localStorage.getItem('buttonLeft') || 'ArrowLeft';
+    window.buttonDown  = localStorage.getItem('buttonDown') || 'ArrowDown';
     window.buttonRight = localStorage.getItem('buttonRight') || 'ArrowRight';
 
     const rowUp    = root.querySelector('.up-row');
@@ -27,6 +27,7 @@ export function key_control(root = document) {
         if (waiting === 2) { window.buttonLeft  = key; btnLeft.textContent  = key; localStorage.setItem('buttonLeft',  key); }
         if (waiting === 3) { window.buttonDown  = key; btnDown.textContent  = key; localStorage.setItem('buttonDown',  key); }
         if (waiting === 4) { window.buttonRight = key; btnRight.textContent = key; localStorage.setItem('buttonRight', key); }
+        document.dispatchEvent(new Event('controlsChanged'));
         waiting = 0;
         document.removeEventListener('keydown', assign);
     }
