@@ -1,4 +1,6 @@
 #screen-main{
+    position: relative;
+    overflow: hidden;
     font-family: sans-serif;
     background-color: indianred;
     background-image: url("../images/dollar.svg"),
@@ -6,6 +8,41 @@
     linear-gradient(45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08));
     background-size: 15vh 15vh, 15vh 15vh, 5vh 5vh, 5vh 5vh;
     background-position: 0 0, 7.5vh 7.5vh, 0 0, 2.5vh 2.5vh;
+}
+
+#dollar-field {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.dollar{
+    --t: 20s;
+    --r: 8s;
+    position: absolute;
+    width: 6vh;
+    height: 6vh;
+    background: url("../images/dollar.svg") center/contain no-repeat;
+    opacity: 0.85;
+    animation: drift var(--t, 20s) linear infinite,
+    spin  var(--r, 8s)  linear infinite;
+}
+
+.dollar.big {
+    width: 12vh;
+    height: 12vh;
+    opacity: 0.4;
+    z-index: -1;
+}
+
+@keyframes drift{
+    from { transform: translateY(110vh) rotate(0); }
+    to { transform: translateY(-110vh) rotate(360deg); }
+}
+
+@keyframes spin{
+    to { transform: rotate(360deg); }
 }
 
 #screen-main .container {

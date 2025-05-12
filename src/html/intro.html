@@ -35,6 +35,24 @@
             </div>
         </div>
     </section>
+    <section id="screen-game" class="screen">
+        <div id="game-area">
+            <div id="player" class="arrow"></div>
+            <div id="hud">
+                <span id="stat-growth">growth rate: 0.00</span><br>
+                <span id="stat-increase">increase: 0.00</span><br>
+                <span id="stat-summary">summary: 0.00</span>
+            </div>
+            <div id="pause-overlay" class="hidden">
+                <div class="menu pause-menu">
+                    <button class="menu-button" id="continue-btn">Продолжить</button>
+                    <button class="menu-button" id="pause-settings-btn">Настройки</button>
+                    <button class="menu-button" id="pause-leader-btn">Таблица рекордов</button>
+                    <button class="menu-button" id="pause-about-btn">Об игре</button>
+                </div>
+            </div>
+        </div>
+    </section>
     <section id="screen-settings" class="screen">
         <button id="back-button" class="menu-button back-button">Вернуться в меню</button>
         <div class="settings-buttons">
@@ -47,5 +65,6 @@
     </section>
     <script type="module" src="../scripts/button_sound.js"></script>
     <script type="module" src="../scripts/global.js"></script>
+    <script type="module" src="../scripts/game.js"></script>
 </body>
 </html>
