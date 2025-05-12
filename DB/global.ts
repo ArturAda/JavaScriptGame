@@ -3,7 +3,7 @@ import { serve } from "https://deno.land/std/http/server.ts";
 const kv = await Deno.openKv();
 const LEADERBOARD_LIMIT = 20;
 
-export interface ScoreEntry {
+interface ScoreEntry {
     name: string;
     summary: number;
     growth_rate: number;
@@ -17,73 +17,90 @@ const corsHeaders = {
     "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
 };
 
-function ok(data?: unknown, init: ResponseInit = {}) {
-    return new Response(data ? JSON.stringify(data) : undefined, {
-        headers: { "Content-Type": "application/json", ...corsHeaders, ...init.headers },
-        ...init,
+function json(data: unknown, status = 200) {
+    return new Response(JSON.stringify(data), {
+        status,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
     });
 }
 
-function bad(msg: string, code = 400) {
-    return ok({ error: msg }, { status: code });
+function error(msg: string, status = 400) {
+    return json({ error: msg }, status);
 }
 
-function keyFor(entry: ScoreEntry): Deno.KvKey {
-    return ["scores", -entry.summary, crypto.randomUUID()];
+function keyFor(entry: ScoreEntry) {
+    return ["scores", -entry.summary, crypto.randomUUID()] as const;
 }
 
 async function trimLeaderboard() {
     const keep = new Set<string>();
     let count = 0;
     for await (const { key } of kv.list<ScoreEntry>({ prefix: ["scores"] })) {
-        if (++count <= LEADERBOARD_LIMIT) keep.add(JSON.stringify(key));
+        if (++count <= LEADERBOARD_LIMIT) {
+            keep.add(JSON.stringify(key));
+        }
     }
     if (count <= LEADERBOARD_LIMIT) return;
-
     for await (const { key } of kv.list<ScoreEntry>({ prefix: ["scores"] })) {
-        if (!keep.has(JSON.stringify(key))) await kv.delete(key);
+        if (!keep.has(JSON.stringify(key))) {
+            await kv.delete(key);
+        }
     }
 }
 
-serve(async (req: Request): Promise<Response> => {
-    if (req.method === "OPTIONS") return new Response("", { headers: corsHeaders });
+serve(async (req) => {
+    if (req.method === "OPTIONS") {
+        return new Response(null, { headers: corsHeaders });
+    }
 
-    const { pathname } = new URL(req.url);
+    const url = new URL(req.url);
+    const { pathname } = url;
 
     if (req.method === "POST" && pathname === "/api/submit") {
-        let data: Partial<ScoreEntry>;
+        let body: Partial<ScoreEntry>;
         try {
-            data = await req.json();
-        } catch (_) {
-            return bad("Invalid JSON");
+            body = await req.json();
+        } catch {
+            return error("Invalid JSON");
+        }
+        if (typeof body.name !== "string" || !body.name.trim()) {
+            return error("'name' is required");
+        }
+        if (typeof body.summary !== "number") {
+            return error("'summary' must be number");
+        }
+        if (typeof body.growth_rate !== "number") {
+            return error("'growth_rate' must be number");
+        }
+        if (typeof body.increase !== "number") {
+            return error("'increase' must be number");
         }
 
-        if (typeof data.name !== "string" || data.name.trim() === "")
-            return bad("'name' is required and must be a string");
-        if (typeof data.summary !== "number") return bad("'summary' must be number");
-        if (typeof data.growth_rate !== "number") return bad("'growth_rate' must be number");
-        if (typeof data.increase !== "number") return bad("'increase' must be number");
-
         const entry: ScoreEntry = {
-            name: data.name.trim().slice(0, 32),
-            summary: data.summary,
-            growth_rate: data.growth_rate,
-            increase: data.increase,
+            name: body.name.trim().slice(0, 32),
+            summary: body.summary,
+            growth_rate: body.growth_rate,
+            increase: body.increase,
             ts: Date.now(),
         };
 
         await kv.set(keyFor(entry), entry);
         await trimLeaderboard();
-        return ok({ saved: true });
+        return json({ success: true });
     }
 
     if (req.method === "GET" && pathname === "/api/leaderboard") {
         const out: ScoreEntry[] = [];
-        for await (const { value } of kv.list<ScoreEntry>({ prefix: ["scores"] }, { limit: LEADERBOARD_LIMIT })) {
+        for await (
+            const { value } of kv.list<ScoreEntry>(
+            { prefix: ["scores"] },
+            { limit: LEADERBOARD_LIMIT }
+        )
+            ) {
             out.push(value);
         }
-        return ok(out);
+        return json(out);
     }
 
-    return bad("Not found", 404);
+    return new Response("Not Found", { status: 404 });
 });
