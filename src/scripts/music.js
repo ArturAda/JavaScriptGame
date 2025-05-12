@@ -13,6 +13,10 @@ gameTracks[1].volume = 0.2;
 
 let music_playing_now = null;
 
+export function applyVolume(track, vol) {
+    if (music_is_playing && track) track.volume = vol;
+}
+
 export function switchTo(track = null, save=true) {
     if (music_playing_now !== track) {
         if (music_playing_now !== null) {

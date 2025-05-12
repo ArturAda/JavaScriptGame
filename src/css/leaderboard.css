@@ -1,0 +1,19 @@
+#screen-leaderboard {
+    flex-direction:column;
+    padding:1rem;
+}
+#leaderboard {
+    border-collapse: collapse;
+    width: 90%;
+    max-width: 800px;
+    margin-bottom: 1rem;
+}
+#leaderboard th, #leaderboard td {
+    border:1px solid #666;
+    padding:0.5rem;
+    text-align:left;
+    cursor: pointer;
+}
+#leaderboard th:hover {
+    background: rgba(255,255,255,0.1);
+}

@@ -1,4 +1,5 @@
-import { switchTo, gameTracks, isMusicPlaying } from './music.js';
+import { switchTo, gameTracks,
+         isMusicPlaying, applyVolume } from './music.js';
 import { key_control }          from './control.js';
 import { playButtonSound }      from './button_sound.js';
 
@@ -17,6 +18,50 @@ const pauseLayer = document.getElementById('pause-overlay');
 const hudG = document.getElementById('stat-growth');
 const hudI = document.getElementById('stat-increase');
 const hudS = document.getElementById('stat-summary');
+
+const continueBtn= document.getElementById('continue-btn');
+const pauseMainBtn= document.getElementById('pause-main-btn');
+const pauseSettings= document.getElementById('pause-settings-btn');
+const pauseLeader= document.getElementById('pause-leader-btn');
+const pauseAbout= document.getElementById('pause-about-btn');
+
+if (continueBtn) {
+    continueBtn.addEventListener('click', () => {
+        playButtonSound();
+        togglePause();
+    });
+}
+
+if (pauseMainBtn) {
+    pauseMainBtn.addEventListener('click', () => {
+        playButtonSound();
+        paused = false;
+        pauseLayer.classList.add('hidden');
+        endGame(false);
+        document.getElementById('screen-main').classList.add('active');
+    });
+}
+
+if (pauseSettings) {
+    pauseSettings.addEventListener('click', () => {
+        playButtonSound();
+        endGame(false);
+        document.getElementById('screen-settings').classList.add('active');
+    });
+}
+
+[ pauseLeader, pauseAbout ].forEach(btn => {
+    if (btn) btn.addEventListener('click', () => {
+        playButtonSound();
+        endGame(false);
+        document.getElementById('screen-main').classList.add('active');
+    });
+});
+
+document.getElementById('leader-back').addEventListener('click', () => {
+    playButtonSound();
+    showScreen('screen-main');
+});
 
 let W=0,H=0; function measure(){ W=gameArea.clientWidth||innerWidth; H=gameArea.clientHeight||innerHeight; }
 measure(); addEventListener('resize',measure);
@@ -62,8 +107,9 @@ const img={evil:'../images/evil_dollar.png',small:'../images/small_dollar.png',b
 const dollars=[];
 function make(k,w,h){
     const el=document.createElement('div');
-    Object.assign(el.style,{position:'absolute',width:`${w}px`,height:`${h}px`,background:`url(${img[k]}) center/contain no-repeat`,willChange:'transform'});
-    gameArea.appendChild(el); return el;
+    Object.assign(el.style,{position:'absolute',width:`${w}px`,height:`${h}px`,background:`url(${img[k]}) center/contain no-repeat`,willChange:'transform', zIndex: '0'});
+    gameArea.appendChild(el);
+    return el;
 }
 function spawn(k,yFixed=null){
     const y=yFixed!==null ? yFixed : Math.random()*(H-100)+50;
@@ -77,7 +123,7 @@ function wave(n){ for(let i=0;i<n;i++){ const r=Math.random(); r<.4?spawn('evil'
 const hit=(a,b)=>{const pa=a.w*HIT_SHRINK*.5,pb=b.w*HIT_SHRINK*.5;
     return a.x+pa<b.x+b.w-pb&&a.x+a.w-pa>b.x+pb&&a.y+pa<b.y+b.h-pb&&a.y+a.h-pa>b.y+pb;};
 
-let running=false,paused=false,raf=0,lastT=0,spawnT=0;
+export let running=false,paused=false,raf=0,lastT=0,spawnT=0;
 function loop(t){
     const dt=(t-lastT)/1000; lastT=t;
     update(dt); render();
@@ -90,9 +136,9 @@ function update(dt){
     if(keys.right){
         rightDur+=dt; leftDur=idleDur=0;
         growth+=Math.min(10,rightDur/0.03)*dt;
-        if(rightStage===0 && rightDur>=1){ envMul*=1.10; rightStage=1; }
-        if(rightStage===1 && rightDur>=2.5){ envMul*=1.25; rightStage=2; }
-        if(rightStage===2 && rightDur>=5){ envMul*=1.40; rightStage=3; }
+        if(rightStage===0 && rightDur>=1){ envMul*=2; rightStage=1; }
+        if(rightStage===1 && rightDur>=2){ envMul*=1.8; rightStage=2; }
+        if(rightStage===2 && rightDur>=3){ envMul*=1.6; rightStage=3; }
         if(rightStage>=3){ right50Timer+=dt; if(right50Timer>=3){ envMul*=1.50; right50Timer=0; } }
         leftSlowTimer=0; slowDecayT=0;
     } else if(keys.left){
@@ -109,7 +155,7 @@ function update(dt){
     }
 
     increase = inc0 + c*growth;
-    summary  = capital0 + increase*b + growth*a;
+    summary  = capital0 + increase*b + growth * growth*a;
     if(summary<0){ endGame(); return; }
 
     survive+=dt; if(survive>=surgeAt){ wave(25); surgeAt+=10+2*Math.random(); }
@@ -145,9 +191,7 @@ function render(){
 function togglePause(){
     if(!running) return;
     paused=!paused; pauseLayer.classList.toggle('hidden',!paused);
-    if (isMusicPlaying()) {
-        gameTracks[2].volume = paused ? VOL_PAUSE : VOL_PLAY;
-    }
+    applyVolume(gameTracks[2], paused ? VOL_PAUSE : VOL_PLAY);
     if(paused) cancelAnimationFrame(raf); else{ lastT=performance.now(); raf=requestAnimationFrame(loop); }
 }
 function reset(){
@@ -170,22 +214,67 @@ document.getElementById('play-button').onclick=()=>{
 
 export function startGame(){
     key_control(document);
-    switchTo(gameTracks[2],true);
-    if (isMusicPlaying()) {
-        gameTracks[2].volume = VOL_PLAY;
-    }
+    switchTo(gameTracks[2], true);
+    applyVolume(gameTracks[2], VOL_PLAY);
     measure();
     player.x=(W-player.w)/2; player.y=(H-player.h)/2;
     reset(); wave(25); spawnT=0; nextWaveDelay=2+Math.random();
     growth=0; summary=0; running=true; paused=false; pauseLayer.classList.add('hidden');
     lastT=performance.now(); raf=requestAnimationFrame(loop);
 }
-function endGame(msg=true){
-    if(!running) return;
-    running=false; cancelAnimationFrame(raf); reset();
-    if(msg) alert(`Game over!\n\ngrowth_rate: ${growth.toFixed(2)}\nincrease: ${increase.toFixed(2)}\nsummary: ${summary.toFixed(2)}`);
-    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-    document.getElementById('screen-main').classList.add('active');
-    switchTo(gameTracks[0], false);
+
+function showGameOverModal() {
+    const modal = document.getElementById('gameover-modal');
+    const input = document.getElementById('player-name-input');
+    modal.classList.remove('hidden');
+    input.value = '';
+    input.focus();
+
+    function onEnter(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            input.removeEventListener('keydown', onEnter);
+            const name = input.value.trim() || 'Без имени';
+            modal.classList.add('hidden');
+            submitScore(name);
+        }
+    }
+    input.addEventListener('keydown', onEnter);
 }
+
+
+async function submitScore(name) {
+    try {
+        await fetch('/api/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name,
+                summary,
+                growth_rate: growth,
+                increase
+            })
+        });
+    } catch(err) {
+        console.error(err);
+    }
+    await submitScoreToServer(name);
+    await loadLeaderboard();
+    showScreen('screen-leaderboard');
+}
+
+document.getElementById('main-leader-btn').addEventListener('click', () => {
+    playButtonSound();
+    loadLeaderboard();
+    showScreen('screen-leaderboard');
+});
+
+function endGame() {
+    if (!running) return;
+    running = false;
+    cancelAnimationFrame(raf);
+    reset();
+    showGameOverModal();
+}
+
 function color(n){ return n>0?'#0f0':n<0?'#f55':'#ccc'; }

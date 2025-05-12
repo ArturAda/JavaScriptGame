@@ -28,20 +28,96 @@
     color: #ccc;
 }
 
+#game-area > .arrow,
+#game-area > div:not(#pause-overlay) {
+    position: absolute;
+    z-index: 0;
+}
+
 #pause-overlay {
     position: absolute;
     inset: 0;
     background: rgba(40,80,255,.25);
     backdrop-filter: blur(3px);
     display: flex;
-    justify-content:center;
-    align-items:center;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
 }
 
 #pause-overlay.hidden {
     display: none;
 }
 
+#pause-overlay .pause-menu {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+}
+
 .pause-menu .menu-button {
     min-width: clamp(10rem, 30vw, 15rem);
+}
+
+#pause-overlay .menu-button {
+    background-color: blanchedalmond;
+    border: none;
+    border-radius: 1vh;
+    padding: 1.2vh 2.5vw;
+    font-size: 1.2rem;
+    box-shadow: 0 1vh 1.5vh rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    z-index: 2;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#pause-overlay .menu-button:hover {
+    transform: translateY(-1.5vh);
+    z-index: 2;
+    box-shadow: 0 1.5vh 2vh rgba(0, 0, 0, 0.4);
+}
+
+.gameover-modal {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.gameover-modal.hidden {
+    display: none;
+}
+
+.gameover-content {
+    background: #222;
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+    color: #fff;
+    width: 90%;
+    max-width: 400px;
+}
+
+.gameover-content h2 {
+    margin: 0 0 1rem;
+}
+
+.gameover-content p {
+    margin: 0 0 1rem;
+}
+
+.gameover-content input {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    box-sizing: border-box;
 }
