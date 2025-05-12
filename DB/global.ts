@@ -105,7 +105,7 @@ serve(async (req) => {
 
     const filePath = p === "/" ? "../src/html/intro.html" : p;
     try {
-        return await serveFile(req, `./src/html${filePath}`);
+        return await serveFile(req, `../src/html/${filePath}`);
     } catch {
         return new Response("Not Found", { status: 404 });
     }
