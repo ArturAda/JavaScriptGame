@@ -117,7 +117,7 @@ serve(async (req) => {
         }
     }
     try {
-        return await serveFile(req, filePath);
+        return await serveFile(req, diskPath);
     } catch {
         return new Response("Not Found", { status: 404 });
     }
