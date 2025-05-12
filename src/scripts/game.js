@@ -277,9 +277,9 @@ async function submitScore(name) {
     } catch(err) {
         console.error(err);
     }
-    await loadLeaderboard();
     switchTo(gameTracks[1]);
     showScreen('screen-leaderboard');
+    await loadLeaderboard();
 }
 
 document.getElementById('main-leader-btn').addEventListener('click', () => {

@@ -103,7 +103,7 @@ serve(async (req) => {
         return json(out);
     }
 
-    const filePath = p === "/" ? "..src/html/intro.html" : p;
+    const filePath = p === "/" ? "../src/html/intro.html" : p;
     try {
         return await serveFile(req, `./src/html${filePath}`);
     } catch {
