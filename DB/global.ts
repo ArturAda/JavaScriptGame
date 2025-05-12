@@ -10,7 +10,6 @@ interface ScoreEntry {
     summary: number;
     growth_rate: number;
     increase: number;
-    ts: number;
 }
 
 const corsHeaders = {
@@ -83,7 +82,6 @@ serve(async (req) => {
             summary: body.summary,
             growth_rate: body.growth_rate,
             increase: body.increase,
-            ts: Date.now(),
         };
 
         await kv.set(keyFor(entry), entry);
