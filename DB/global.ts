@@ -67,6 +67,10 @@ serve(async (req) => {
         if (typeof body.name !== "string" || !body.name.trim()) {
             return error("`name` is required");
         }
+        const trimmedName = body.name.trim();
+        if (trimmedName.length > 20) {
+            return error("`name` must be at most 20 characters");
+        }
         if (typeof body.summary !== "number") {
             return error("`summary` must be a number");
         }
@@ -78,25 +82,19 @@ serve(async (req) => {
         }
 
         const entry: ScoreEntry = {
-            name: body.name.trim().slice(0, 32),
+            name: trimmedName,
             summary: body.summary,
             growth_rate: body.growth_rate,
             increase: body.increase,
         };
 
         await kv.set(keyFor(entry), entry);
-        await trimLeaderboard();
         return json({ success: true });
     }
 
     if (p === "/api/leaderboard" && req.method === "GET") {
         const out: ScoreEntry[] = [];
-        for await (
-            const { value } of kv.list<ScoreEntry>(
-            { prefix: ["scores"] },
-            { limit: LEADERBOARD_LIMIT }
-        )
-            ) {
+        for await (const { value } of kv.list<ScoreEntry>({ prefix: ["scores"] })) {
             out.push(value);
         }
         return json(out);
