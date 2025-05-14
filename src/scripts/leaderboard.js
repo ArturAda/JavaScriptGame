@@ -9,16 +9,6 @@ function showScreen(id) {
     );
 }
 
-document.getElementById('main-leader-btn').addEventListener('click', () => {
-    switchTo(gameTracks[1]);
-    showScreen('screen-leaderboard');
-});
-
-document.getElementById('leader-back').addEventListener('click', () => {
-    switchTo(gameTracks[0]);
-    showScreen('screen-main');
-});
-
 export async function submitScoreToServer(score) {
     await fetch('/api/submit', {
         method: 'POST',
@@ -68,19 +58,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 currentSort.asc = true;
             }
             loadLeaderboard();
-        });
-    });
-
-    document.getElementById('leader-back').addEventListener('click', () => {
-        playButtonSound();
-        showScreen('screen-main');
-    });
-
-    document.querySelectorAll('#main-leader-btn, #pause-leader-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            playButtonSound();
-            loadLeaderboard();
-            showScreen('screen-leaderboard');
         });
     });
 });

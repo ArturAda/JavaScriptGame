@@ -42,9 +42,9 @@ export function key_control(root = document) {
 
     window.addEventListener('storage', e => {
         const v = e.newValue;
-        if (e.key === 'buttonUp')    { window.buttonUp    = v; btnUp.textContent    = v; }
-        if (e.key === 'buttonLeft')  { window.buttonLeft  = v; btnLeft.textContent  = v; }
-        if (e.key === 'buttonDown')  { window.buttonDown  = v; btnDown.textContent  = v; }
-        if (e.key === 'buttonRight') { window.buttonRight = v; btnRight.textContent = v; }
+        if (e.key === 'buttonUp')    { window.buttonUp    = v; btnUp.textContent    = v; document.dispatchEvent(new Event('controlsChanged')); }
+        if (e.key === 'buttonLeft')  { window.buttonLeft  = v; btnLeft.textContent  = v;  document.dispatchEvent(new Event('controlsChanged')); }
+        if (e.key === 'buttonDown')  { window.buttonDown  = v; btnDown.textContent  = v; document.dispatchEvent(new Event('controlsChanged')); }
+        if (e.key === 'buttonRight') { window.buttonRight = v; btnRight.textContent = v; document.dispatchEvent(new Event('controlsChanged')); }
     });
 }

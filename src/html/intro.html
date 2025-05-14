@@ -17,117 +17,116 @@
     </style>
 </head>
 <body>
-<section id="screen-intro" class="screen active">
-    <div class="intro">
-        <button id="start-button" class="big-button">Время приключений</button>
-    </div>
-</section>
-<section id="screen-main" class="screen">
-    <div id="dollar-field"></div>
-    <div class="container">
-        <h1 class="game-title">
-            <span class="stocks">Stocks</span>
-            <span class="nightmare">Nightmare</span>
-        </h1>
-        <div class="menu">
-            <button class="menu-button" id="play-button">Играть</button>
-            <button class="menu-button" id="settings-button">Настройки</button>
-            <button class="menu-button" id="main-leader-btn">Таблица рекордов</button>
-            <button id="main-about-btn" class="menu-button" >Об игре</button>
+    <section id="screen-intro" class="screen active">
+        <div class="intro">
+            <button id="start-button" class="big-button">Время приключений</button>
         </div>
-    </div>
-</section>
-<section id="screen-about" class="screen">
-    <div class="about-content">
-        <h2>Правила игры «Stocks Nightmare»</h2>
-        <h3>Цель игры:</h3>
-        <p>Управляя стрелкой, избегать столкновений с различными долларами и набрать максимально возможный итоговый счет (Summary).</p>
-        <h3>Управление:</h3>
-        <ul>
-            <li><strong>Вверх / Вниз</strong>: двигать стрелку вверх и вниз.</li>
-            <li><strong>Вправо</strong>: увеличивает Growth и ускоряет игру.</li>
-            <li><strong>Влево</strong>: уменьшает Growth и замедляет игру.</li>
-        </ul>
-        <h3>Игровые показатели:</h3>
-        <ul>
-            <li><strong>Growth Rate</strong>, <strong>Increase</strong>, <strong>Summary</strong> отображаются в левом верхнем углу.</li>
-            <li>Цвет: зелёный > 0, красный < 0, серый = 0.</li>
-        </ul>
-        <h3>Особенности игры:</h3>
-        <ul>
-            <li>Чем дольше удерживается кнопка вправо, тем быстрее увеличивается Growth Rate.</li>
-            <li>При долгом бездействии Growth Rate начнёт снижаться.</li>
-            <li>Чем выше Increase, тем быстрее двигаются доллары.</li>
-        </ul>
-        <h3>Враги (Доллары):</h3>
-        <ul>
-            <li><strong>Злой Доллар</strong>: красная повязка, движется вверх-вниз и влево.</li>
-            <li><strong>Маленький Доллар</strong>: маленький, быстро меняет направление.</li>
-            <li><strong>Большой Доллар</strong>: медленный, в очках.</li>
-        </ul>
-        <h3>Конец игры:</h3>
-        <p>При первом столкновении стрелки с долларом.</p>
-        <h3>Победа:</h3>
-        <p>Набрать максимально высокий Summary.</p>
-    </div>
-    <button id="about-back" class="menu-button">Назад</button>
-</section>
-<section id="screen-game" class="screen">
-    <div id="game-area">
-        <div id="player" class="arrow"></div>
-        <div id="hud">
-            <span id="stat-growth">growth rate: 0.00</span><br>
-            <span id="stat-increase">increase: 0.00</span><br>
-            <span id="stat-summary">summary: 0.00</span>
-        </div>
-        <div id="pause-overlay" class="hidden">
-            <div class="menu pause-menu">
-                <button class="menu-button" id="continue-btn">Продолжить</button>
-                <button class="menu-button" id="pause-settings-btn">Настройки</button>
-                <button class="menu-button" id="pause-leader-btn">Таблица рекордов</button>
-                <button class="menu-button" id="pause-about-btn">Об игре</button>
-                <button class="menu-button" id="pause-main-btn">В главное меню</button>
+    </section>
+    <section id="screen-main" class="screen">
+        <div id="dollar-field"></div>
+        <div class="container">
+            <h1 class="game-title">
+                <span class="stocks">Stocks</span>
+                <span class="nightmare">Nightmare</span>
+            </h1>
+            <div class="menu">
+                <button class="menu-button" id="play-button">Играть</button>
+                <button class="menu-button" id="settings-button">Настройки</button>
+                <button class="menu-button" id="main-leader-btn">Таблица рекордов</button>
+                <button id="main-about-btn" class="menu-button" >Об игре</button>
             </div>
         </div>
-        <div id="gameover-modal" class="gameover-modal hidden">
-            <div class="gameover-content">
-                <h2>Game Over</h2>
-                <p>Введите ваше имя для таблицы рекордов</p>
-                <input id="player-name-input" type="text" placeholder="Ваше имя" />
+    </section>
+    <section id="screen-about" class="screen">
+        <div class="about-content">
+            <h2>Правила игры «Stocks Nightmare»</h2>
+            <h3>Цель игры:</h3>
+            <p>Управляя стрелкой, избегать столкновений с различными долларами и набрать максимально возможный итоговый счет (Summary).</p>
+            <h3>Управление:</h3>
+            <ul>
+                <li><strong>Вверх / Вниз</strong>: двигать стрелку вверх и вниз.</li>
+                <li><strong>Вправо</strong>: увеличивает Growth и ускоряет игру.</li>
+                <li><strong>Влево</strong>: уменьшает Growth и замедляет игру.</li>
+            </ul>
+            <h3>Игровые показатели:</h3>
+            <ul>
+                <li><strong>Growth Rate</strong>, <strong>Increase</strong>, <strong>Summary</strong> отображаются в левом верхнем углу.</li>
+                <li>Цвет: зелёный > 0, красный < 0, серый = 0.</li>
+            </ul>
+            <h3>Особенности игры:</h3>
+            <ul>
+                <li>Чем дольше удерживается кнопка вправо, тем быстрее увеличивается Growth Rate.</li>
+                <li>При долгом бездействии Growth Rate начнёт снижаться.</li>
+                <li>Чем выше Increase, тем быстрее двигаются доллары.</li>
+            </ul>
+            <h3>Враги (Доллары):</h3>
+            <ul>
+                <li><strong>Злой Доллар</strong>: красная повязка, движется вверх-вниз и влево.</li>
+                <li><strong>Маленький Доллар</strong>: маленький, быстро меняет направление.</li>
+                <li><strong>Большой Доллар</strong>: медленный, в очках.</li>
+            </ul>
+            <h3>Конец игры:</h3>
+            <p>При первом столкновении стрелки с долларом.</p>
+            <h3>Победа:</h3>
+            <p>Набрать максимально высокий Summary.</p>
+        </div>
+        <button id="about-back" class="menu-button">Назад</button>
+    </section>
+    <section id="screen-game" class="screen">
+        <div id="game-area">
+            <div id="player" class="arrow"></div>
+            <div id="hud">
+                <span id="stat-growth">growth rate: 0.00</span><br>
+                <span id="stat-increase">increase: 0.00</span><br>
+                <span id="stat-summary">summary: 0.00</span>
+            </div>
+            <div id="pause-overlay" class="hidden">
+                <div class="menu pause-menu">
+                    <button class="menu-button" id="continue-btn">Продолжить</button>
+                    <button class="menu-button" id="pause-settings-btn">Настройки</button>
+                    <button class="menu-button" id="pause-leader-btn">Таблица рекордов</button>
+                    <button class="menu-button" id="pause-about-btn">Об игре</button>
+                    <button class="menu-button" id="pause-main-btn">В главное меню</button>
+                </div>
+            </div>
+            <div id="gameover-modal" class="gameover-modal hidden">
+                <div class="gameover-content">
+                    <h2>Game Over</h2>
+                    <p>Введите ваше имя для таблицы рекордов</p>
+                    <input id="player-name-input" type="text" placeholder="Ваше имя" />
+                </div>
             </div>
         </div>
-    </div>
-</section>
-<section id="screen-settings" class="screen">
-    <button id="back-button" class="menu-button back-button">Вернуться в меню</button>
-    <div class="settings-buttons">
-        <div class="setting-row up-row"><label>Вверх</label><button></button></div>
-        <div class="setting-row left-row"><label>Влево</label><button></button></div>
-        <div class="setting-row down-row"><label>Вниз</label><button></button></div>
-        <div class="setting-row right-row"><label>Вправо</label><button></button></div>
-        <div class="sound-row"><label>Включить музыку в игре</label><button></button></div>
-    </div>
-</section>
-<section id="screen-leaderboard" class="screen">
-    <h2>Таблица рекордов</h2>
-    <div class="leaderboard-container">
-        <table id="leaderboard">
-            <thead>
-            <tr>
-                <th data-key="name">Name ▲▼</th>
-                <th data-key="summary">Summary ▲▼</th>
-                <th data-key="growth_rate">Increase ▲▼</th>
-                <th data-key="increase">Growth ▲▼</th>
-            </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-    <button id="leader-back" class="menu-button">Назад</button>
-</section>
-<script type="module" src="../scripts/button_sound.js"></script>
-<script type="module" src="../scripts/global.js"></script>
-<script type="module" src="../scripts/game.js"></script>
-<script type="module" src="../scripts/leaderboard.js"></script>
+    </section>
+    <section id="screen-settings" class="screen">
+        <button id="back-button" class="menu-button back-button">Назад</button>
+        <div class="settings-buttons">
+            <div class="setting-row up-row"><label>Вверх</label><button></button></div>
+            <div class="setting-row left-row"><label>Влево</label><button></button></div>
+            <div class="setting-row down-row"><label>Вниз</label><button></button></div>
+            <div class="setting-row right-row"><label>Вправо</label><button></button></div>
+            <div class="sound-row"><label>Включить музыку в игре</label><button></button></div>
+        </div>
+    </section>
+    <section id="screen-leaderboard" class="screen">
+        <h2>Таблица рекордов</h2>
+        <div class="leaderboard-container">
+            <table id="leaderboard">
+                <thead>
+                <tr>
+                    <th data-key="name">Name ▲▼</th>
+                    <th data-key="summary">Summary ▲▼</th>
+                    <th data-key="growth_rate">Increase ▲▼</th>
+                    <th data-key="increase">Growth ▲▼</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <button id="leader-back" class="menu-button">Назад</button>
+    </section>
+    <script type="module" src="../scripts/button_sound.js"></script>
+    <script type="module" src="../scripts/game.js"></script>
+    <script type="module" src="../scripts/leaderboard.js"></script>
 </body>
 </html>

@@ -1,20 +1,81 @@
 import { switchTo, gameTracks,
-    isMusicPlaying, applyVolume } from './music.js';
+    isMusicPlaying, applyVolume, setMusicPlaying } from './music.js';
 import { key_control }          from './control.js';
 import { playButtonSound }      from './button_sound.js';
 import { loadLeaderboard } from './leaderboard.js';
+
+let settingsFromPause = false;
+let leaderboardFromPause = false;
+let gameoverLeaderboard = false;
+let aboutFromPause = false;
+const backBtn = document.getElementById('back-button');
+const leaderBack = document.getElementById('leader-back');
+const mainLeaderBtn = document.getElementById('main-leader-btn');
+const aboutBack = document.getElementById('about-back');
+const mainAboutBtn = document.getElementById('main-about-btn');
+
+function show(id) {
+    document.querySelectorAll('.screen')
+        .forEach(s => s.classList.toggle('active', s.id === id));
+}
+
+(function spawnDollars() {
+    const f = document.getElementById('dollar-field');
+    const add = (n, s1, s2, t1, t2, r1, r2, big) => {
+        for (let i = 0; i < n; i++) {
+            const d = document.createElement('div');
+            d.className = 'dollar' + (big ? ' big' : '');
+            const size = s1 + Math.random() * (s2 - s1);
+            d.style.width = d.style.height = `${size}vh`;
+            d.style.left = `${Math.random() * 100}%`;
+            d.style.setProperty('--t', `${t1 + Math.random() * (t2 - t1)}s`);
+            d.style.setProperty('--r', `${r1 + Math.random() * (r2 - r1)}s`);
+            f.appendChild(d);
+        }
+    };
+    add(20, 4, 8, 15, 30, 6, 14, false);
+    add(8, 10, 18, 25, 45, 12, 24, true);
+})();
+
+const musicBtn = document.querySelector('.sound-row button');
+
+function refreshMusicBtn() {
+    musicBtn.textContent = isMusicPlaying() ? '✕' : '';
+}
+
+musicBtn.addEventListener('click', () => {
+    setMusicPlaying(!isMusicPlaying());
+    refreshMusicBtn();
+});
+
+window.addEventListener('storage', e => {
+    if (e.key === 'buttonSound') refreshMusicBtn();
+});
+
+document.getElementById('start-button').addEventListener('click', () => {
+    switchTo(gameTracks[0]);
+    show('screen-main');
+});
+
+document.getElementById('settings-button').addEventListener('click', () => {
+    show('screen-settings');
+    refreshMusicBtn();
+});
+
+document.getElementById('back-button').addEventListener('click', () => {
+    show('screen-main');
+});
+
+key_control(document);
+refreshMusicBtn();
+
+
+
 
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 }
-
-document.getElementById('main-leader-btn')
-    .addEventListener('click', () => showScreen('screen-leaderboard'));
-
-document.getElementById('leader-back')
-    .addEventListener('click', () => showScreen('screen-main'));
-
 
 let startTime = 0;
 const SPEED_ARROW = 180;
@@ -23,7 +84,7 @@ const SMALL_K = 1;
 const BIG_K   = 0.7;
 const EVIL_VY = 60;
 const VOL_PLAY  = 0.80;
-const VOL_PAUSE = 0.05;
+const VOL_PAUSE = 0.15;
 const HIT_SHRINK = 0.35;
 
 const gameArea   = document.getElementById('game-area');
@@ -51,31 +112,108 @@ if (pauseMainBtn) {
         playButtonSound();
         paused = false;
         pauseLayer.classList.add('hidden');
-        endGame(false);
-        document.getElementById('screen-main').classList.add('active');
+        switchTo(gameTracks[0], true);
+        showScreen('screen-main');
     });
 }
 
 if (pauseSettings) {
     pauseSettings.addEventListener('click', () => {
         playButtonSound();
-        endGame(false);
-        document.getElementById('screen-settings').classList.add('active');
+        settingsFromPause = true;
+        pauseLayer.classList.add('hidden');
+        showScreen('screen-settings');
     });
 }
 
-[ pauseLeader, pauseAbout ].forEach(btn => {
+[pauseLeader].forEach(btn => {
     if (btn) btn.addEventListener('click', () => {
         playButtonSound();
-        endGame(false);
-        document.getElementById('screen-main').classList.add('active');
+        leaderboardFromPause = true;
+        pauseLayer.classList.remove('hidden');
+        loadLeaderboard();
+        showScreen('screen-leaderboard');
     });
 });
 
-document.getElementById('leader-back').addEventListener('click', () => {
-    playButtonSound();
-    showScreen('screen-main');
-});
+if (backBtn) {
+    backBtn.addEventListener('click', () => {
+        playButtonSound();
+        if (settingsFromPause) {
+            showScreen('screen-game');
+            pauseLayer.classList.remove('hidden');
+            applyVolume(gameTracks[2], VOL_PAUSE);
+        } else {
+            switchTo(gameTracks[0], true);
+            showScreen('screen-main');
+        }
+        settingsFromPause = false;
+    });
+}
+
+if (leaderBack) {
+    leaderBack.addEventListener('click', e => {
+        playButtonSound();
+        if (gameoverLeaderboard) {
+            switchTo(gameTracks[0], true);
+            showScreen('screen-main');
+        }
+        else if (leaderboardFromPause) {
+            showScreen('screen-game');
+            pauseLayer.classList.remove('hidden');
+            applyVolume(gameTracks[2], VOL_PAUSE);
+        }
+        else {
+            switchTo(gameTracks[0], true);
+            showScreen('screen-main');
+        }
+        gameoverLeaderboard = false;
+        leaderboardFromPause = false;
+    });
+}
+
+if (aboutBack) {
+    aboutBack.addEventListener('click', e => {
+        playButtonSound();
+        if (aboutFromPause) {
+            showScreen('screen-game');
+            pauseLayer.classList.remove('hidden');
+            applyVolume(gameTracks[2], VOL_PAUSE);
+        } else {
+            switchTo(gameTracks[0], true);
+            showScreen('screen-main');
+        }
+        aboutFromPause = false;
+    });
+}
+
+if (mainLeaderBtn) {
+    mainLeaderBtn.addEventListener('click', () => {
+        playButtonSound();
+        loadLeaderboard();
+        switchTo(gameTracks[1], true);
+        showScreen('screen-leaderboard');
+        leaderboardFromPause = false;
+    });
+}
+
+if (mainAboutBtn) {
+    mainAboutBtn.addEventListener('click', () => {
+        playButtonSound();
+        switchTo(gameTracks[1], true);
+        showScreen('screen-about');
+        aboutFromPause = false;
+    });
+}
+
+if (pauseAbout) {
+    pauseAbout.addEventListener('click', () => {
+        playButtonSound();
+        aboutFromPause = true;
+        pauseLayer.classList.add('hidden');
+        showScreen('screen-about');
+    });
+}
 
 let W=0,H=0; function measure(){ W=gameArea.clientWidth||innerWidth; H=gameArea.clientHeight||innerHeight; }
 measure(); addEventListener('resize',measure);
@@ -93,7 +231,14 @@ document.addEventListener('controlsChanged',syncNames);
 
 addEventListener('keydown',e=>{
     if(!running) return;
-    if(e.key==='Escape'){ e.preventDefault(); togglePause(); return; }
+    if(e.key==='Escape'){
+        const active = document.querySelector('.screen.active')?.id;
+        if (active === 'screen-game') {
+            e.preventDefault();
+            togglePause();
+        }
+        return;
+    }
     if(e.key===keys.upName)   keys.up=true;
     if(e.key===keys.downName) keys.down=true;
     if(e.key===keys.leftName) keys.left=true;
@@ -220,11 +365,6 @@ function reset(){
     bigCheck=0; edgeCheck=0; slowDecayT=0;
 }
 
-document.getElementById('continue-btn').onclick = ()=>{ playButtonSound(); togglePause(); };
-document.getElementById('pause-settings-btn').onclick = ()=>{ playButtonSound(); endGame(false); document.getElementById('screen-settings').classList.add('active'); };
-['pause-leader-btn','pause-about-btn'].forEach(id=>{
-    const b=document.getElementById(id); if(b) b.onclick=()=>{ playButtonSound(); endGame(false); document.getElementById('screen-main').classList.add('active'); };
-});
 document.getElementById('play-button').onclick=()=>{
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
     document.getElementById('screen-game').classList.add('active'); startGame();
@@ -277,23 +417,22 @@ async function submitScore(name) {
     } catch(err) {
         console.error(err);
     }
+    gameoverLeaderboard = true;
     switchTo(gameTracks[1]);
     showScreen('screen-leaderboard');
     await loadLeaderboard();
 }
 
-document.getElementById('main-leader-btn').addEventListener('click', () => {
-    playButtonSound();
-    loadLeaderboard();
-    showScreen('screen-leaderboard');
-});
 
-function endGame() {
+
+function endGame(showResults = true) {
     if (!running) return;
     running = false;
     cancelAnimationFrame(raf);
     reset();
-    showGameOverModal();
+    if (showResults) {
+        showGameOverModal();
+    }
 }
 
 function color(n){ return n>0?'#0f0':n<0?'#f55':'#ccc'; }
