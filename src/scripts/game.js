@@ -13,6 +13,9 @@ const leaderBack = document.getElementById('leader-back');
 const mainLeaderBtn = document.getElementById('main-leader-btn');
 const aboutBack = document.getElementById('about-back');
 const mainAboutBtn = document.getElementById('main-about-btn');
+const pauseRestartBtn = document.getElementById('pause-restart-btn');
+const gameoverMenuBtn = document.getElementById('gameover-menu-btn');
+const gameoverRestartBtn = document.getElementById('gameover-restart-btn');
 
 function show(id) {
     document.querySelectorAll('.screen')
@@ -123,6 +126,34 @@ if (pauseSettings) {
         settingsFromPause = true;
         pauseLayer.classList.add('hidden');
         showScreen('screen-settings');
+    });
+}
+
+if (pauseRestartBtn) {
+    pauseRestartBtn.addEventListener('click', () => {
+        playButtonSound();
+        switchTo(null);
+        switchTo(gameTracks[2], true);
+        startGame();
+    });
+}
+
+if (gameoverMenuBtn) {
+    gameoverMenuBtn.addEventListener('click', () => {
+        playButtonSound();
+        document.getElementById('gameover-modal').classList.add('hidden');
+        switchTo(gameTracks[0], true);
+        showScreen('screen-main');
+    });
+}
+
+if (gameoverRestartBtn) {
+    gameoverRestartBtn.addEventListener('click', () => {
+        playButtonSound();
+        document.getElementById('gameover-modal').classList.add('hidden');
+        switchTo(null);
+        switchTo(gameTracks[2], true);
+        startGame();
     });
 }
 
@@ -422,9 +453,6 @@ async function submitScore(name) {
     showScreen('screen-leaderboard');
     await loadLeaderboard();
 }
-
-
-
 function endGame(showResults = true) {
     if (!running) return;
     running = false;
@@ -434,5 +462,4 @@ function endGame(showResults = true) {
         showGameOverModal();
     }
 }
-
 function color(n){ return n>0?'#0f0':n<0?'#f55':'#ccc'; }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Project Ada</title>
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="../css/intro.css">
     <link rel="stylesheet" href="../css/main_menu.css">
     <link rel="stylesheet" href="../css/game.css">
@@ -49,6 +49,16 @@
                 <li><strong>Вправо</strong>: увеличивает Growth и ускоряет игру.</li>
                 <li><strong>Влево</strong>: уменьшает Growth и замедляет игру.</li>
             </ul>
+            <h3>Пауза:</h3>
+            <p>Если нажать <strong>Escape</strong> во время игры, она перейдет в режим паузы и остановится. В режиме паузы вы можете:</p>
+            <ul>
+                <li><strong>Продолжить игру</strong> (вернуться к текущему состоянию);</li>
+                <li><strong>Начать сначала</strong> (сбросить игру и запустить заново);</li>
+                <li><strong>Настройки</strong> (изменить управление и звук);</li>
+                <li><strong>Таблица рекордов</strong>;</li>
+                <li><strong>Об игре</strong> (прочитать правила);</li>
+                <li><strong>Главное меню</strong> (выйти в стартовый экран).</li>
+            </ul>
             <h3>Игровые показатели:</h3>
             <ul>
                 <li><strong>Growth Rate</strong>, <strong>Increase</strong>, <strong>Summary</strong> отображаются в левом верхнем углу.</li>
@@ -84,6 +94,7 @@
             <div id="pause-overlay" class="hidden">
                 <div class="menu pause-menu">
                     <button class="menu-button" id="continue-btn">Продолжить</button>
+                    <button class="menu-button" id="pause-restart-btn">Начать сначала</button>
                     <button class="menu-button" id="pause-settings-btn">Настройки</button>
                     <button class="menu-button" id="pause-leader-btn">Таблица рекордов</button>
                     <button class="menu-button" id="pause-about-btn">Об игре</button>
@@ -94,7 +105,9 @@
                 <div class="gameover-content">
                     <h2>Game Over</h2>
                     <p>Введите ваше имя для таблицы рекордов</p>
-                    <input id="player-name-input" type="text" placeholder="Ваше имя" maxlength="20" />
+                    <input id="player-name-input" type="text" placeholder="Ваше имя" maxlength="20">
+                    <button class="menu-button" id="gameover-restart-btn">Начать сначала</button>
+                    <button class="menu-button" id="gameover-menu-btn">В главное меню</button>
                 </div>
             </div>
         </div>
