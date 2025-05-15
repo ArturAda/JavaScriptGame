@@ -564,9 +564,7 @@ async function submitScore(name) {
         await fetch('/api/submit', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'X-API-Key': 'Dragon_Bobik'
-            },
+                'Content-Type': 'application/json'},
             body: JSON.stringify({
                 name,
                 summary,
