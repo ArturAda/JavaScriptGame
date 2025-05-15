@@ -81,7 +81,7 @@ function showScreen(id) {
 }
 
 let startTime = 0;
-const SPEED_ARROW = 180;
+const SPEED_ARROW = 400;
 const BASE_SPEED  = 160;
 const SMALL_K = 1;
 const BIG_K   = 0.7;
@@ -312,8 +312,15 @@ function spawn(k,yFixed=null){
 }
 function wave(n){ for(let i=0;i<n;i++){ const r=Math.random(); r<.4?spawn('evil'):r<.7?spawn('small'):spawn('big'); } }
 
-const hit=(a,b)=>{const pa=a.w*HIT_SHRINK*.5,pb=b.w*HIT_SHRINK*.5;
-    return a.x+pa<b.x+b.w-pb&&a.x+a.w-pa>b.x+pb&&a.y+pa<b.y+b.h-pb&&a.y+a.h-pa>b.y+pb;};
+const hit=(a,b)=>{
+    const pa = a.w * HIT_SHRINK * .5;
+    const shrinkB = b.k === 'big'
+        ? b.w * (HIT_SHRINK * 0.5) * .5
+        : b.w * HIT_SHRINK * .5;
+    return a.x + pa            < b.x + b.w - shrinkB &&
+        a.x + a.w - pa     > b.x + shrinkB &&
+        a.y + pa            < b.y + b.h - shrinkB &&
+        a.y + a.h - pa     > b.y + shrinkB;};
 
 export let running=false,paused=false,raf=0,lastT=0,spawnT=0;
 function loop(t){
@@ -321,45 +328,149 @@ function loop(t){
     update(dt); render();
     if(running) raf=requestAnimationFrame(loop);
 }
+
+const DEFAULT_PERCENT_TICK_RIGHT = 0.004;
+const DEFAULT_PERCENT_TICK_LEFT  = 0.004;
+const IDLE_PERCENT_TICK = 0.0005;
+const IDLE_TICK_INTERVAL = 0.1;
+let specialTimer = 0;
+let idleTickTimer = 0;
+let percentTickRight = DEFAULT_PERCENT_TICK_RIGHT;
+let percentTickLeft  = DEFAULT_PERCENT_TICK_LEFT;
+let rightTickTimer   = 0;
+let rightSecondTimer = 0;
+let leftTickTimer= 0;
+let leftSecondTimer  = 0;
+
 function update(dt){
     const vy=SPEED_ARROW*dt; if(keys.up) player.y-=vy; if(keys.down) player.y+=vy;
     player.y=Math.max(0,Math.min(H-player.h,player.y));
 
     if(keys.right){
-        rightDur+=dt; leftDur=idleDur=0;
-        growth+=Math.min(10,rightDur/0.03)*dt;
-        if(rightStage===0 && rightDur>=1){ envMul*=2; rightStage=1; }
-        if(rightStage===1 && rightDur>=2){ envMul*=1.8; rightStage=2; }
-        if(rightStage===2 && rightDur>=3){ envMul*=1.6; rightStage=3; }
-        if(rightStage>=3){ right50Timer+=dt; if(right50Timer>=3){ envMul*=1.50; right50Timer=0; } }
-        leftSlowTimer=0; slowDecayT=0;
+        if (rightDur <= dt) {
+            percentTickRight = DEFAULT_PERCENT_TICK_RIGHT;
+            rightTickTimer = 0;
+            rightSecondTimer = 0;
+        }
+        if (rightDur <= dt) {
+            percentTickRight = DEFAULT_PERCENT_TICK_RIGHT;
+            percentTickLeft  = DEFAULT_PERCENT_TICK_LEFT;
+            rightTickTimer   = rightSecondTimer = 0;
+            leftTickTimer    = leftSecondTimer  = 0;
+        }
+        percentTickLeft = DEFAULT_PERCENT_TICK_LEFT;
+        leftTickTimer = 0;
+        leftSecondTimer = 0;
+        rightDur += dt;
+        leftDur = idleDur = 0;
+        growth  += Math.min(10, rightDur / 0.03) * dt;
+        if (rightStage === 0 && rightDur >= 1) {
+            envMul *= 2;
+            rightStage = 1;
+        }
+        if (rightTickTimer === 0 && rightSecondTimer === 0 && rightDur <= dt) {
+            envMul *= 1 + percentTickRight;
+        }
+        rightTickTimer += dt;
+        while (rightTickTimer >= 0.1) {
+            envMul *= 1 + percentTickRight;
+            rightTickTimer -= 0.1;
+        }
+        rightSecondTimer += dt;
+        if (rightSecondTimer >= 1) {
+            const randPct = (Math.random() * (0.1 - 0.05) + 0.05) / 100;
+            percentTickRight += randPct;
+            rightSecondTimer -= 1;
+        }
+        leftTickTimer = leftSecondTimer = 0;
     } else if(keys.left){
-        leftDur+=dt; rightDur=idleDur=0; rightStage=0; right50Timer=0;
-        growth-=Math.min(10,leftDur/0.03)*dt;
-        leftSlowTimer+=dt;
-        while(leftSlowTimer>=1 && envMul>1){ envMul=Math.max(1,envMul*0.9); leftSlowTimer-=1; }
-        slowDecayT=0;
+        if (leftDur <= dt) {
+            percentTickLeft = DEFAULT_PERCENT_TICK_LEFT;
+            leftTickTimer   = 0;
+            leftSecondTimer = 0;
+        }
+        if (leftDur <= dt) {
+            percentTickLeft  = DEFAULT_PERCENT_TICK_LEFT;
+            percentTickRight = DEFAULT_PERCENT_TICK_RIGHT;
+            leftTickTimer    = leftSecondTimer  = 0;
+            rightTickTimer   = rightSecondTimer = 0;
+        }
+        percentTickRight = DEFAULT_PERCENT_TICK_RIGHT;
+        rightTickTimer   = 0;
+        rightSecondTimer = 0;
+        leftDur += dt;
+        rightDur = idleDur = 0;
+        rightStage = 0;
+        right50Timer = 0;
+        growth  -= Math.min(3, leftDur / 0.03) * dt;
+        if (leftTickTimer === 0 && leftSecondTimer === 0 && leftDur <= dt) {
+            envMul *= 1 - percentTickLeft;
+        }
+        leftTickTimer += dt;
+        while (leftTickTimer >= 0.1) {
+            envMul *= 1 - percentTickLeft;
+            leftTickTimer -= 0.1;
+        }
+        leftSecondTimer += dt;
+        if (leftSecondTimer >= 1) {
+            const randPct = (Math.random() * (0.09 - 0.05) + 0.05) / 100;
+            percentTickLeft += randPct;
+            leftSecondTimer -= 1;
+        }
+        rightTickTimer = rightSecondTimer = 0;
+        if (envMul < 1) envMul = 1;
     } else {
-        idleDur+=dt; rightDur=leftDur=0; rightStage=0; right50Timer=0;
-        let drop=0; if(idleDur>=5)drop=2.5; else if(idleDur>=3)drop=1; else if(idleDur>=1.5)drop=.25; else if(idleDur>=1)drop=.5;
-        growth-=drop*dt*2;
-        if(envMul>1){ slowDecayT+=dt; if(slowDecayT>=2){ envMul=Math.max(1,envMul*0.9); slowDecayT-=2; } }
+        percentTickLeft = DEFAULT_PERCENT_TICK_LEFT;
+        leftTickTimer = 0;
+        leftSecondTimer = 0;
+        percentTickRight = DEFAULT_PERCENT_TICK_RIGHT;
+        rightTickTimer   = 0;
+        rightSecondTimer = 0;
+        rightTickTimer = rightSecondTimer = leftTickTimer = leftSecondTimer = 0;
+        idleTickTimer += dt;
+        while (idleTickTimer >= IDLE_TICK_INTERVAL) {
+            envMul = Math.max(1, envMul * (1 - IDLE_PERCENT_TICK));
+            idleTickTimer -= IDLE_TICK_INTERVAL;
+        }
+        idleDur += dt;
+        rightDur = leftDur = 0;
+        rightStage = 0;
+        right50Timer = 0;
+        let drop = 0;
+        if (idleDur >= 5)         drop = 2.5;
+        else if (idleDur >= 2.5)  drop = 1;
+        growth -= drop * dt * 3.5;
     }
 
     const elapsed = (performance.now() - startTime) / 1000;
 
     increase = c*growth / elapsed;
-    summary  = inc0 + increase * b / elapsed + growth * a;
+    summary  = inc0 + increase * b * elapsed + growth * a / elapsed;
     if(summary<0){ endGame(); return; }
 
-    survive+=dt; if(survive>=surgeAt){ wave(20); surgeAt+=10+2*Math.random(); }
+    survive+=dt; if(survive>=surgeAt){ wave(25); surgeAt+=10+2*Math.random(); }
 
     spawnT+=dt; if(spawnT>=nextWaveDelay){ spawnT=0; nextWaveDelay=2+Math.random(); wave(10); }
 
-    bigCheck+=dt; if(bigCheck>=15){ bigCheck=0; if(Math.random()<0.5){ for(let i=0;i<25;i++) spawn('big'); } }
+    bigCheck+=dt; if(bigCheck>=15){ bigCheck=0; if(Math.random()<0.5){ for(let i=0;i<15;i++) spawn('big'); } }
 
     edgeCheck+=dt; if(edgeCheck>=4){ edgeCheck=0;
-        for(let i=0;i<4;i++){ const kind=Math.random()<0.5?'big':'evil'; spawn(kind,0); spawn(kind,H-96); }
+        for(let i=0;i<8;i++){ const kind=Math.random()<0.5?'big':'evil'; spawn(kind, 0); spawn(kind,H-96); }
+    }
+
+    specialTimer += dt;
+    if (survive >= 15 && specialTimer >= 5) {
+        specialTimer -= 5;
+        if (Math.random() < 0.5) {
+            for (let i = 0; i < 10; i++) {
+                const kind = Math.random() < 0.5 ? 'evil' : 'small';
+                if (i < 3) {
+                    spawn(kind, 0);
+                } else {
+                    spawn(kind);
+                }
+            }
+        }
     }
 
     dollars.forEach(d=>{
@@ -406,7 +517,8 @@ export function startGame(){
     switchTo(gameTracks[2], true);
     applyVolume(gameTracks[2], VOL_PLAY);
     measure();
-    player.x=(W-player.w)/2; player.y=(H-player.h)/2;
+    player.x = W / 4;
+    player.y = (H - player.h) / 2;
     reset(); wave(25); spawnT=0; nextWaveDelay=2+Math.random();
     growth=0; summary=0; running=true; paused=false; pauseLayer.classList.add('hidden');
     startTime = performance.now();
