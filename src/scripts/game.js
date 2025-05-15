@@ -528,22 +528,28 @@ export function startGame(){
 function showGameOverModal() {
     const modal = document.getElementById('gameover-modal');
     const input = document.getElementById('player-name-input');
+    const submitBtn = document.getElementById('gameover-submit-btn');
     modal.classList.remove('hidden');
     input.value = '';
     input.focus();
     let isSubmitting = false;
 
-    function onEnter(e) {
-        if (e.key === 'Enter' && !isSubmitting) {
-            e.preventDefault();
-            isSubmitting = true;
-            input.removeEventListener('keydown', onEnter);
-            const name = input.value.trim() || 'Без имени';
-            modal.classList.add('hidden');
-            submitScore(name);
-        }
+    function doSubmit() {
+        if (isSubmitting) return;
+        isSubmitting = true;
+        modal.classList.add('hidden');
+        const name = input.value.trim() || 'Без имени';
+        submitScore(name);
     }
-    input.addEventListener('keydown', onEnter, { once: true });
+
+    const onEnter = e => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            doSubmit();
+        }
+    };
+    input.addEventListener('keydown', onEnter);
+    submitBtn.addEventListener('click', doSubmit, { once: true });
 }
 
 
