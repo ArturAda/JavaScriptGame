@@ -527,8 +527,14 @@ export function startGame(){
 
 function showGameOverModal() {
     const modal = document.getElementById('gameover-modal');
-    const input = document.getElementById('player-name-input');
-    const submitBtn = document.getElementById('gameover-submit-btn');
+    const oldInput = document.getElementById('player-name-input');
+    const newInput = oldInput.cloneNode(true);
+    oldInput.parentNode.replaceChild(newInput, oldInput);
+    const oldSubmit = document.getElementById('gameover-submit-btn');
+    const newSubmit = oldSubmit.cloneNode(true);
+    oldSubmit.parentNode.replaceChild(newSubmit, oldSubmit);
+    const input     = newInput;
+    const submitBtn = newSubmit;
     modal.classList.remove('hidden');
     input.value = '';
     input.focus();
