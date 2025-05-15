@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.185.0/http/server.ts";
 import { serveFile } from "https://deno.land/std@0.185.0/http/file_server.ts";
 import { join }      from "https://deno.land/std@0.185.0/path/mod.ts";
 
+const API_KEY = Deno.env.get("API_KEY") || "Dragon_Bobik";
 const kv = await Deno.openKv();
 const LEADERBOARD_LIMIT = 20;
 
@@ -55,6 +56,16 @@ serve(async (req) => {
 
     if (req.method === "OPTIONS") {
         return new Response(null, { headers: corsHeaders });
+    }
+
+    if (p.startsWith("/api/")) {
+        const key= req.headers.get("X-API-Key");
+        if (key !== API_KEY) {
+            return new Response("Forbidden", {
+                status: 403,
+                headers: { "Content-Type": "text/plain" },
+            });
+        }
     }
 
     if (p === "/api/submit" && req.method === "POST") {
