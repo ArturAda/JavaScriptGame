@@ -100,13 +100,6 @@ serve(async (req) => {
         return json(out);
     }
 
-    if (p === "/api/leaderboard" && req.method === "DELETE") {
-        for await (const { key } of kv.list<ScoreEntry>({ prefix: ["scores"] })) {
-            await kv.delete(key);
-        }
-        return new Response("Leaderboard cleared", { status: 200 });
-    }
-
     let diskPath: string;
     if (p === "/") {
         diskPath = join(Deno.cwd(), "src", "html", "intro.html");
