@@ -531,17 +531,19 @@ function showGameOverModal() {
     modal.classList.remove('hidden');
     input.value = '';
     input.focus();
+    let isSubmitting = false;
 
     function onEnter(e) {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && !isSubmitting) {
             e.preventDefault();
+            isSubmitting = true;
             input.removeEventListener('keydown', onEnter);
             const name = input.value.trim() || 'Без имени';
             modal.classList.add('hidden');
             submitScore(name);
         }
     }
-    input.addEventListener('keydown', onEnter);
+    input.addEventListener('keydown', onEnter, { once: true });
 }
 
 
