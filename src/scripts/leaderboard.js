@@ -18,7 +18,10 @@ export async function submitScoreToServer(score) {
 }
 
 export async function loadLeaderboard() {
-    const res = await fetch('/api/leaderboard');
+    const res = await fetch('/api/leaderboard', {
+        headers: { 'X-API-Key': 'Dragon_Bobik' }
+    });
+    if (!res.ok) throw new Error(await res.text());
     const data = await res.json();
     data.sort((a, b) => {
         if (currentSort.key === 'name') {
